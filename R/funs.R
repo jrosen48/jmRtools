@@ -69,11 +69,12 @@ to_compare <- function(network1, network2, combine = F){
     first_row_network1 <- nrow(network1)
     first_row_network2 <- nrow(network2)
 
+    # Something is going wrong here
+
     for (i in 1:length(add_to_row_network1)){
         network1 <- rbind(network1, row_vector_network1)
         row.names(network1)[first_row_network1 + i] <- add_to_row_network1[i]
     }
-
 
     for (i in 1:length(add_to_row_network2)){
         network2 <- rbind(network2, row_vector_network2)
@@ -143,13 +144,13 @@ cormat_plot <- function(df_ss){
     }
 
     # # Get upper triangle of the correlation matrix
-    # get_upper_tri <- function(cormat){
-    #     cormat[lower.tri(cormat)]<- NA
-    #     return(cormat)
-    # }
+    get_upper_tri <- function(cormat){
+        cormat[lower.tri(cormat)]<- NA
+        return(cormat)
+    }
 
-    upper_tri <- get_lower_tri(cormat)
-    melted_cormat <- reshape2::melt(upper_tri, na.rm = T)
+    lower_tri <- get_lower_tri(cormat)
+    melted_cormat <- reshape2::melt(lower_tri, na.rm = T)
 
     ggheatmap <- ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
         geom_tile(color = "white")+
@@ -178,4 +179,20 @@ cormat_plot <- function(df_ss){
         guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
                                      title.position = "top", title.hjust = 0.5)) +
         theme(text=element_text(family="Times"))
+}
+
+scale_vector <- function(x) {
+    x / stats::sd(x, na.rm = TRUE)
+}
+
+center_vector <- function(x) {
+    x - mean(x, na.rm = TRUE)
+}
+
+center_and_scale_vector <- function(x) {
+    if (stats::sd(x, na.rm = TRUE) == 0) {
+        x - mean(x, na.rm = TRUE)
+    } else {
+        (x - mean(x, na.rm = TRUE)) / stats::sd(x, na.rm = TRUE)
+    }
 }
