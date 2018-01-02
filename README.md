@@ -21,3 +21,4 @@ Because this package is not available on CRAN, to install it, first install the 
 - `center_vector(v)` center the values in the vector `v` to have mean = 0
 - `scale_vector(v)` standardize the values in the vector `v` to have SD = 1
 - `center_and_scale_vector(v)` center and standardize the values in the vector `v` to have mean = 0 and SD = 1
+- `t_tester()` takes the `dv` (for the dependent variable), `fac` (for the factor), and `df` (for the data frame) using raw (unquoted) variable names. Returns the test statistic, p-value, and effect size.

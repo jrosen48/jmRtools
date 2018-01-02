@@ -196,3 +196,34 @@ center_and_scale_vector <- function(x) {
         (x - mean(x, na.rm = TRUE)) / stats::sd(x, na.rm = TRUE)
     }
 }
+
+t_tester <- function(dv, fac, df) {
+
+    dv_q <- as.character(substitute(dv))
+    fac_q <- as.character(substitute(fac))
+
+    dv_enquo <- enquo(dv)
+    fac_enquo <- enquo(fac)
+
+    the_formula <- as.formula(paste(dv_q, " ~ ", fac_q))
+    test_results <- stats::t.test(the_formula, data = df)
+
+    print(paste("Test statistic is ", round(test_results$statistic, 3)))
+    print(paste("P-value is ", test_results$p.value))
+
+    xx <- dplyr::count(df, !! fac_enquo)
+    xx <- dplyr::pull(xx, n)
+
+    effect_size_results <- compute.es::tes(test_results$statistic,
+                                           n.1 = xx[1],
+                                           n.2 = xx[2],
+                                           verbose = F)
+
+    print(paste("Effect size is ", effect_size_results$d))
+
+    out <- dplyr::data_frame(test_statistic = test_results$statistic,
+                             p_value = test_results$p.value,
+                             effect_size = effect_size_results$d)
+
+    out
+}
