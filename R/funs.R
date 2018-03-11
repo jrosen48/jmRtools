@@ -227,3 +227,10 @@ t_tester <- function(dv, fac, df) {
 
     out
 }
+
+broom_t <- function(x, y, ...) {
+    o <- t.test(x = x,
+                y = y,
+                ...)
+    broom::tidy(o)
+}
